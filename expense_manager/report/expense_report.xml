@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Report Template -->
+    <template id="expense_report_template">
+        <t t-call="web.external_layout">
+            <div class="page">
+
+                <h2>Expense Report</h2>
+
+                <p>
+                    <strong>Company Name:</strong>
+                    <span t-field="res_company.name"/>
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    <span t-field="res_company.partner_id.contact_address"/>
+                </p>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Expense Name</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Tax</th>
+                            <th>Total</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr t-foreach="docs" t-as="o">
+                            <td>
+                                <span t-field="o.name"/>
+                            </td>
+                            <td>
+                                <span t-field="o.date"/>
+                            </td>
+                            <td>
+                                <span t-field="o.amount"/>
+                            </td>
+                            <td>
+                                <span t-field="o.tax"/>
+                            </td>
+                            <td>
+                                <span t-field="o.total"/>
+                            </td>
+                            <td>
+                                <span t-field="o.category"/>
+                            </td>
+                            <td>
+                                <span t-field="o.state"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    <t t-set="grand_total" t-value="grand_total"/>
+
+<p>
+    <strong>Grand Total:</strong>
+    <span t-esc="grand_total"/>
+</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- Report Action -->
+    <record id="action_expense_report" model="ir.actions.report">
+        <field name="name">Expense Report</field>
+        <field name="model">expense.record</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">expense_manager.expense_report_template</field>
+        <field name="report_file">expense_manager.expense_report_template</field>
+        <field name="binding_model_id" ref="model_expense_record"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

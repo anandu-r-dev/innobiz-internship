@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_expense_record_list" model="ir.ui.view">
+        <field name="name">expense.record.list</field>
+        <field name="model">expense.record</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="amount"/>
+                <field name="tax"/>
+                <field name="total"/>
+                <field name="category"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_expense_record_search" model="ir.ui.view">
+    <field name="name">expense.record.search</field>
+    <field name="model">expense.record</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="category"/>
+            <filter string="Draft"
+            name="state_draft"
+            domain="[('state','=','draft')]"/>
+            <filter string="Approved"
+            name="state_approved"
+            domain="[('state','=','approved')]"/>
+            <filter string="Credited Amount"
+            name="amount_credited"
+            domain="[('is_amount_credited','=',True)]"/>
+            <separator/>
+
+            <filter string="Group By State"
+            name="group_state"
+            context="{'group_by':'state'}"/>
+
+            <filter string="Group By Category"
+            name="group_category"
+            context="{'group_by':'category'}"/>
+            <filter string="Group By Date"
+            name="group_date"
+            context="{'group_by':'date'}"/>
+
+            <filter string="Group By Amount"
+            name="group_amount"
+            context="{'group_by':'amount'}"/>
+
+            <filter string="Group By Credited"
+            name="group_credited"
+            context="{'group_by':'is_amount_credited'}"/>
+        </search>
+    </field>
+</record>
+
+    <record id="view_expense_record_form" model="ir.ui.view">
+        <field name="name">expense.record.form</field>
+        <field name="model">expense.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_toggle_credited" 
+                            type="object" 
+                            string="Credited" 
+                            icon="fa-square-o"
+                            class="btn-secondary"
+                            invisible="is_amount_credited == True"/>
+
+                    <button name="action_toggle_credited" 
+                            type="object" 
+                            string="Credited" 
+                            icon="fa-check-square-o"
+                            class="oe_highlight"
+                            invisible="is_amount_credited == False"/>
+                    
+                    <field name="state" 
+                           widget="statusbar" 
+                           options="{'clickable': '1'}"
+                           readonly="state in ['approved', 'rejected'] and not is_manager"/>
+                </header>
+                <sheet>
+                    <field name="is_manager" invisible="1"/>
+                    <field name="is_amount_credited" invisible="1"/>
+                    
+                    <group>
+                        <field name="name" readonly="state in ['approved', 'rejected'] and not is_manager"/>
+                        <field name="date" readonly="state in ['approved', 'rejected'] and not is_manager"/>
+                        <field name="amount" readonly="state in ['approved', 'rejected'] and not is_manager"/>
+                        <field name="tax" readonly="state in ['approved', 'rejected'] and not is_manager"/>
+                        <field name="total" readonly="1"/>
+                        <field name="category" readonly="state in ['approved', 'rejected'] and not is_manager"/>
+
+                        <field name="is_approved_by_manager" invisible="not is_manager"/>
+                        <field name="is_amount_credited"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_expense_record" model="ir.actions.act_window">
+        <field name="name">Expenses</field>
+        <field name="res_model">expense.record</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_expense_record_search"/>
+    </record>
+
+    <menuitem id="menu_expense_root" name="Expense Manager"/>
+    <menuitem id="menu_expense_record" name="Expenses" parent="menu_expense_root" action="action_expense_record"/>
+
+</odoo>
