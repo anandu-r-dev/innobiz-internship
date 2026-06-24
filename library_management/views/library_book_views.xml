@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="library_book_view_list" model="ir.ui.view">
+        <field name="name">library.book.view.list</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="book_title"/>
+                <field name="author"/>
+                <field name="isbn"/>
+                <field name="status"/>
+                <field name="available"/>
+                <field name="total_copies"/>
+                <field name="borrowed_copies"/>
+                <field name="available_copies"/>
+                <field name="book_loc"/>
+                <field name="late_days"/>
+                <field name="fine"/>
+                <field name="fine_paid"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="library_book_view_form" model="ir.ui.view">
+        <field name="name">library.book.view.form</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="book_title"/>
+                        <field name="author"/>
+                        <field name="isbn"/>
+                        <field name="status"/>
+                        <field name="available"/>
+                    </group>
+
+                    <group string="Library Details">
+                        <field name="total_copies"/>
+                        <field name="borrowed_copies"/>
+                        <field name="available_copies" readonly="1"/>
+
+                    
+                        <field name="book_loc"
+                               groups="library_management.group_library_manager"/>
+
+                   
+                        <field name="book_loc"
+                               groups="library_management.group_library_user"
+                               readonly="1"/>
+                    </group>
+
+                    <group string="Fine Details">
+                        <field name="late_days"/>
+                        <field name="fine" readonly="1"/>
+                        <field name="fine_paid" readonly="1"/>
+                        <button name="action_fine_paid"
+                                string=" Fine Paid"
+                                type="object"
+                                groups="library_management.group_library_manager"/>    
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="library_book_view_search" model="ir.ui.view">
+        <field name="name">library.book.view.search</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <search>
+
+           
+                <field name="book_title"/>
+                <field name="author"/>
+                <field name="isbn"/>
+                <field name="status"/>
+
+            
+                <filter string="Available"
+                        name="available"
+                        domain="[('available', '=', True)]"/>
+
+                <filter string="Unavailable"
+                        name="unavailable"
+                        domain="[('available', '=', False)]"/>
+
+                <filter string="Fine Paid"
+                        name="fine_paid"
+                        domain="[('fine_paid', '=', True)]"/>
+
+                <filter string="Fine Not Paid"
+                        name="fine_not_paid"
+                        domain="[('fine_paid', '=', False)]"/>
+
+                <separator/>
+            
+                <filter string="Author"
+                        name="group_by_author"
+                        context="{'group_by':'author'}"/>
+
+                <filter string="Status"
+                        name="group_by_status"
+                        context="{'group_by':'status'}"/>
+
+                <filter string="Book Location"
+                        name="group_by_location"
+                        context="{'group_by':'book_loc'}"/>
+
+                <filter string="Available"
+                        name="group_by_available"
+                        context="{'group_by':'available'}"/>,
+
+            </search>
+        </field>
+    </record>
+
+    <record id="library_book_action" model="ir.actions.act_window">
+        <field name="name">Books</field>
+        <field name="res_model">library.book</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="library_book_view_search"/>
+    </record>
+
+    <menuitem
+        id="library_menu"
+        name="Library Management"
+        action="library_book_action"/>
+
+</odoo>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_task_tracker_list" model="ir.ui.view">
+        <field name="name">task.tracker.list</field>
+        <field name="model">task.tracker</field>
+        <field name="arch" type="xml">
+            <list string="Tasks">
+                <header>
+                    <button name="%(task_tracker.action_report_task_tracker_summary)d" 
+                            string="Print PDF Report" 
+                            type="action" 
+                            class="btn-primary"/>
+                </header>
+                <field name="task_code"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="priority"/>
+                <field name="deadline"/>
+                <field name="is_manager" column_invisible="True"/>
+                <field name="is_done" readonly="not is_manager"/>
+                <field name="status"/>
+                <field name="deadline_live_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_task_tracker_form" model="ir.ui.view">
+        <field name="name">task.tracker.form</field>
+        <field name="model">task.tracker</field>
+        <field name="arch" type="xml">
+            <form string="Task">
+                <header>
+                    <button name="action_request_deadline_extension" 
+                            string="Request Deadline Extension" 
+                            type="object" 
+                            class="oe_highlight"/>
+                    <button name="%(task_tracker.action_report_task_tracker_summary)d" 
+                            string="Print PDF Report" 
+                            type="action" 
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <field name="is_manager" invisible="1"/>
+                    <group>
+                        <field name="task_code"/>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="priority"/>
+                        <field name="deadline"/>
+                        <field name="deadline_live_status" readonly="1"/>
+                    </group>
+                    <group string="Status">
+                        <field name="is_done" readonly="not is_manager"/>
+                        <field name="status" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_task_deadline_extension_wizard_form" model="ir.ui.view">
+        <field name="name">task.deadline.extension.wizard.form</field>
+        <field name="model">task.deadline.extension.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Request Deadline Extension">
+                <sheet>
+                    <group>
+                        <field name="task_id" invisible="1"/>
+                        <field name="new_deadline"/>
+                        <field name="reason" placeholder="Explain why the deadline extension is required..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_submit_request" string="Submit Request" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_task_tracker_search" model="ir.ui.view">
+        <field name="name">task.tracker.search</field>
+        <field name="model">task.tracker</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Task Name"/>
+                <field name="task_code" string="Task Code"/>
+                <field name="description" string="Description"/>
+
+                <filter string="Pending Tasks" name="pending_tasks" domain="[('is_done', '=', False)]"/>
+                <filter string="Completed Tasks" name="completed_tasks" domain="[('is_done', '=', True)]"/>
+                <separator/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+
+                <filter string="Group By: Completed Status" name="group_by_is_done" context="{'group_by': 'is_done'}"/>
+                <filter string="Group By: Task Name" name="group_by_name" context="{'group_by': 'name'}"/>
+                <filter string="Group By: Task Code" name="group_by_task_code" context="{'group_by': 'task_code'}"/>
+                <filter string="Group By: Deadline Status" name="group_by_deadline_live_status" context="{'group_by': 'deadline_live_status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_task_tracker" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">task.tracker</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_task_tracker_search"/>
+    </record>
+
+    <menuitem id="menu_task_tracker_root" name="Task Tracker"/>
+    <menuitem id="menu_task_tracker" name="Tasks" parent="menu_task_tracker_root" action="action_task_tracker"/>
+
+</odoo>

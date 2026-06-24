@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_task_tracker_user,access.task.tracker.user,model_task_tracker,,1,1,1,1
+access_task_deadline_extension_wizard_user,access.task.deadline.extension.wizard.user,model_task_deadline_extension_wizard,base.group_user,1,1,1,1
+
+
